@@ -3,6 +3,11 @@ filebeat CHANGELOG
 
 This file is used to list changes made in each version of the filebeat cookbook.
 
+0.3.6
+-----
+
+- Rewrited filebeat_prospector resource to 12.5 style based on @melifaro work
+
 0.3.5
 -----
 
