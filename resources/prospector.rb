@@ -1,5 +1,7 @@
 require 'set'
 
+use_inline_resources if defined?(use_inline_resources)
+
 property :name, String, name_property: true
 property :paths, Array, required: true
 property :type, String
@@ -101,6 +103,10 @@ action :create do
       notifies :restart, 'service[filebeat]' if node['filebeat']['notify_restart'] && !node['filebeat']['disable_service']
     end
     Chef::Log.warn("Config file #{file} not present in defined resources, deleted.")
+  end
+
+  service 'filebeat' do
+    action :nothing
   end
 end
 
