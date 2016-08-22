@@ -91,7 +91,7 @@ action :create do
   file_content = { 'filebeat' => { 'prospectors' => [prospector_config] } }.to_yaml.to_s
   file "#{node['filebeat']['prospectors_dir']}/prospector-#{name}.yml" do
     content file_content
-    mode 0644
+    mode '0644'
     owner 'root'
     group 'root'
     notifies :restart, 'service[filebeat]' if node['filebeat']['notify_restart'] && !node['filebeat']['disable_service']
