@@ -34,10 +34,10 @@ default_action :create
 
 def prospector_config
   content = {}
-  content['paths'] = paths if paths
+  content['paths'] = paths.to_a if paths
   content['type'] = type if type
   content['encoding'] = encoding if encoding
-  content['fields'] = fields if fields
+  content['fields'] = fields.to_hash if fields
   content['fields_under_root'] = fields_under_root if fields_under_root
   content['ignore_older'] = ignore_older if ignore_older
   content['document_type'] = document_type if document_type
@@ -50,17 +50,17 @@ def prospector_config
   content['max_backoff'] = max_backoff if max_backoff
   content['backoff_factor'] = backoff_factor if backoff_factor
   content['force_close_files'] = force_close_files if force_close_files
-  content['include_lines'] = include_lines if include_lines
-  content['exclude_lines'] = exclude_lines if exclude_lines
+  content['include_lines'] = include_lines.to_a if include_lines
+  content['exclude_lines'] = exclude_lines.to_a if exclude_lines
   content['max_bytes'] = max_bytes if max_bytes
-  content['multiline'] = multiline if multiline
-  content['exclude_files'] = exclude_files if exclude_files
+  content['multiline'] = multiline.to_hash if multiline
+  content['exclude_files'] = exclude_files.to_a if exclude_files
   content['spool_size'] = spool_size if spool_size
   content['publish_async'] = publish_async if publish_async
   content['idle_timeout'] = idle_timeout if idle_timeout
   content['registry_file'] = registry_file if registry_file
   # Support for json parsing was added at elastic/beats#1143, which is currently alpha
-  content['json'] = json if json
+  content['json'] = json.to_hash if json
   content
 end
 
@@ -75,14 +75,14 @@ end
 
 def orphaned_files
   present_files = Dir.entries(node['filebeat']['prospectors_dir'])
-                     .select { |f| !::File.directory? f }
-                     .map { |f| ::File.join(node['filebeat']['prospectors_dir'], f) }
-                     .to_set
+                    .select { |f| !::File.directory? f }
+                    .map { |f| ::File.join(node['filebeat']['prospectors_dir'], f) }
+                    .to_set
 
   resource_defined_files = run_context.resource_collection.all_resources
-                                      .select { |r| r.is_a?(Chef::Resource::File) || r.is_a?(Chef::Resource::FilebeatProspector) }
-                                      .map { |r| resource_file_path(r) }
-                                      .to_set
+                    .select { |r| r.is_a?(Chef::Resource::File) || r.is_a?(Chef::Resource::FilebeatProspector) }
+                    .map { |r| resource_file_path(r) }
+                    .to_set
 
   present_files - resource_defined_files
 end
